@@ -30,11 +30,12 @@
 #include <pi_i2c.h>     // Pi I2C library!
 #include <pi_lw_gpio.h> // Pi GPIO library!
 
-#include "pca9685_registers.h"
+#include "pca9685_registers.h" // PCA9685 register definitions
 
 // Round to the nearest integer
 #define ROUND(n) (((n - (int)n) >= 0.5) ? (int)(n + 1) : (int)(n))
 
+// Turn the device on and off
 #define DEVICE_POWER_GPIO 4 // UPDATE
 
 // Testing PCA9685 "16-channel, 12-bit PWM Fm+ I2C-bus LED controller" per
@@ -344,6 +345,8 @@ int main(void) {
     // Wait some time to watch the output
     sleep(5);
 
+    printf("Finished test\n");
+
     // Set the following settings:
     // - Low power mode
     config[0] = LOW_POWER;
@@ -351,6 +354,8 @@ int main(void) {
     if ((ret = configure_device(pca9685_addr, MODE1, config, 1)) < 0) {
         return ret;
     }
+
+    printf("Device now in a low power mode\n");
 
     return 0;
 }
