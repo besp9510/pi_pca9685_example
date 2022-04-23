@@ -155,7 +155,7 @@ int configure_device(int device_addr, int reg_addr, int *configs,
         // to the final value of the register:
         reg_value[0] = (reg_value[0] & ~(0x01 << (configs[i] >> 8)))
                         | (configs[i] << (configs[i] >> 8));
-    }
+    };
 
     printf("Setting register 0x%X to 0x%X\n", reg_addr, reg_value[0]);
 
@@ -200,11 +200,11 @@ int set_pwm_duty_cycle(int device_addr, int led_id, float duty_cycle) {
         // Deal with frame count wrapping:
         if ((led_delay_time + led_on_counts > 4096)) {
             led_off_time = led_off_time - 4096;
-        }
+        };
     } else {
         // LED full on:
         led_delay_time = led_delay_time | (0x01 << 12);
-    }
+    };
 
     // Lower gets 8 LSBs and higher gets 4 MSBs
     led_on_l = led_delay_time;
@@ -213,13 +213,13 @@ int set_pwm_duty_cycle(int device_addr, int led_id, float duty_cycle) {
     led_off_h = led_off_time >> 8;
 
     // Calculate actual duty cycle:
-    duty_cycle_actual = (led_on_counts / 4096.0);
+    duty_cycle_actual = (led_on_counts / 4096.0f);
 
     // Package up into a nice array:
     int led_register_values[4] = {led_on_l, led_on_h, led_off_l, led_off_h};
 
     printf("Calculated LED%d ON/OFF registers for duty cycle = %.3f%%\n",
-           led_id, duty_cycle*100);
+           led_id, duty_cycle * 100);
     printf("led_delay_time = %d\n", (uint8_t) led_delay_time);
     printf("led_on_counts = %d\n", (uint8_t) led_on_counts);
     printf("led_off_time = %d\n", (uint8_t) led_off_time);
@@ -227,16 +227,16 @@ int set_pwm_duty_cycle(int device_addr, int led_id, float duty_cycle) {
     printf("led_on_h = 0x%x\n", (uint8_t) led_on_h);
     printf("led_off_l = 0x%x\n", (uint8_t) led_off_l);
     printf("led_off_h = 0x%x\n", (uint8_t) led_off_h);
-    printf("duty_cycle_actual = %.3f%%\n", duty_cycle_actual*100);
+    printf("duty_cycle_actual = %.3f%%\n", duty_cycle_actual * 100);
 
-    printf("Setting register 0x%X to 0x%X\n", (0x06 + led_id * 4),
-           (0x06 + led_id * 4 + 3));
+    printf("Setting register 0x%X to 0x%X\n", (6 + led_id * 4),
+           (6 + led_id * 4 + 3));
 
-    if ((ret = write_i2c(device_addr, (0x06 + led_id * 4),
-         led_register_values, 0x04)) < 0) {
+    if ((ret = write_i2c(device_addr, (6 + led_id * 4),
+         led_register_values, 4)) < 0) {
         i2c_error_handler(ret);
         return ret;
-    }
+    };
 
     printf("Duty cycle set\n");
 
@@ -262,15 +262,15 @@ int set_frequency(int device_addr, int frequency) {
     } else {
         // Calculate the prescale value based on equation (1) on page 25:
         prescale_value[0] = (clock_frequency / (4096 * frequency)) - 1;
-    }
+    };
 
     printf("Calculated prescale value for desired frequency = %d\n", frequency);
     printf("prescale_value = 0x%X\n", prescale_value[0]);
 
-    if ((ret = write_i2c(device_addr, PRE_SCALE, prescale_value, 0x01)) < 0) {
+    if ((ret = write_i2c(device_addr, PRE_SCALE, prescale_value, 1)) < 0) {
         i2c_error_handler(ret);
         return ret;
-    }
+    };
 
     printf("Frequency set\n");
 
@@ -304,12 +304,12 @@ int main(void) {
     if ((ret = config_i2c(sda_pin, scl_pin, speed_grade)) < 0 ) {
         printf("config_i2c() failed to configure and returned %d\n", ret);
         return ret;
-    }
+    };
 
     // Check to see if the device is present prior to interacting with device:
     if ((ret = scan_for_device(pca9685_addr)) < 0) {
         return ret;
-    }
+    };
 
     // Set the following settings:
     // - Use internal clock
@@ -322,12 +322,12 @@ int main(void) {
 
     if ((ret = configure_device(pca9685_addr, MODE1, config, 7)) < 0) {
         return ret;
-    }
+    };
 
     // Set the frequency:
     if ((ret = set_frequency(pca9685_addr, frequency)) < 0) {
         return ret;
-    }
+    };
 
     // Set the following settings:
     // - Normal power
@@ -335,12 +335,12 @@ int main(void) {
 
     if ((ret = configure_device(pca9685_addr, MODE1, config, 1)) < 0) {
         return ret;
-    }
+    };
 
     // Set the duty cycle:
     if ((ret = set_pwm_duty_cycle(pca9685_addr, led_id, duty_cycle)) < 0) {
         return ret;
-    }
+    };
 
     // Wait some time to watch the output
     sleep(5);
@@ -353,7 +353,7 @@ int main(void) {
 
     if ((ret = configure_device(pca9685_addr, MODE1, config, 1)) < 0) {
         return ret;
-    }
+    };
 
     printf("Device now in a low power mode\n");
 
