@@ -214,8 +214,8 @@ int set_pwm_duty_cycle(int device_addr, int led_id, int duty_cycle) {
     // Package up into a nice array:
     int led_register_values[4] = {led_on_l, led_on_h, led_off_l, led_off_h};
 
-    printf("Calculated LED%d ON/OFF registers for duty cycle = %.3f%%\n",
-           led_id, duty_cycle * 100);
+    printf("Calculated LED%d ON/OFF registers for duty cycle = %d\n",
+           led_id, duty_cycle);
     printf("led_delay_time = %d\n", (uint8_t) led_delay_time);
     printf("led_on_counts = %d\n", (uint8_t) led_on_counts);
     printf("led_off_time = %d\n", (uint8_t) led_off_time);
@@ -235,7 +235,7 @@ int set_pwm_duty_cycle(int device_addr, int led_id, int duty_cycle) {
 
     printf("Duty cycle set\n");
 
-    return duty_cycle_actual;
+    return 0;
 }
 
 // Set frequency (can only occur when device in low power mode):
