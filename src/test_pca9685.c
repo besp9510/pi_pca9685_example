@@ -169,8 +169,8 @@ int configure_device(int device_addr, int reg_addr, int *configs,
     return 0;
 }
 
-// Set LED PWM duty cycle
-int set_pwm_duty_cycle(int device_addr, int led_id, float duty_cycle) {
+// Set LED PWM duty cycle (12 bit resolution: 0 = 0%; 4095 = 100%):
+int pca9685_set_pwm_duty_cycle(int device_addr, int led_id, int duty_cycle) {
     int led_on_l = 0;
     int led_on_h = 0;
     int led_off_l = 0;
@@ -182,9 +182,8 @@ int set_pwm_duty_cycle(int device_addr, int led_id, float duty_cycle) {
 
     int ret;
 
-    float duty_cycle_actual;
-
-    printf("Setting duty cycle on device 0x%X\n", device_addr);
+    printf("Setting duty cycle on PCA9685 device 0x%X to %d\n",
+            device_addr, duty_cycle);
 
     // Assume 10% delay time:
     led_delay_time = ROUND(0.10 * 4096) - 1;
@@ -194,7 +193,7 @@ int set_pwm_duty_cycle(int device_addr, int led_id, float duty_cycle) {
     // Calculate LED off time if less than 100%:
     if (duty_cycle < 1) {
         // Find LED off time based on the LED on counts
-        led_on_counts = duty_cycle * 4096;
+        led_on_counts = duty_cycle;
         led_off_time = led_delay_time + led_on_counts;
 
         // Deal with frame count wrapping:
@@ -211,9 +210,6 @@ int set_pwm_duty_cycle(int device_addr, int led_id, float duty_cycle) {
     led_on_h = led_delay_time >> 8;
     led_off_l = led_off_time;
     led_off_h = led_off_time >> 8;
-
-    // Calculate actual duty cycle:
-    duty_cycle_actual = (led_on_counts / 4096.0f);
 
     // Package up into a nice array:
     int led_register_values[4] = {led_on_l, led_on_h, led_off_l, led_off_h};
