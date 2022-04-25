@@ -170,7 +170,7 @@ int configure_device(int device_addr, int reg_addr, int *configs,
 }
 
 // Set LED PWM duty cycle (12 bit resolution: 0 = 0%; 4095 = 100%):
-int pca9685_set_pwm_duty_cycle(int device_addr, int led_id, int duty_cycle) {
+int set_pwm_duty_cycle(int device_addr, int led_id, int duty_cycle) {
     int led_on_l = 0;
     int led_on_h = 0;
     int led_off_l = 0;
