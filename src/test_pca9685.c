@@ -223,7 +223,6 @@ int set_pwm_duty_cycle(int device_addr, int led_id, int duty_cycle) {
     printf("led_on_h = 0x%x\n", (uint8_t) led_on_h);
     printf("led_off_l = 0x%x\n", (uint8_t) led_off_l);
     printf("led_off_h = 0x%x\n", (uint8_t) led_off_h);
-    printf("duty_cycle_actual = %.3f%%\n", duty_cycle_actual * 100);
 
     printf("Setting register 0x%X to 0x%X\n", (6 + led_id * 4),
            (6 + led_id * 4 + 3));
@@ -283,7 +282,7 @@ int main(void) {
     int sda_pin = 2; // UPDATE
     int scl_pin = 3; // UPDATE
 
-    float duty_cycle = 0.5;           // UPDATE
+    int duty_cycle = 2048;            // UPDATE
     int frequency = 1526;             // UPDATE
     int led_id = 15;                  // UPDATE
     int speed_grade = I2C_FULL_SPEED; // UPDATE
