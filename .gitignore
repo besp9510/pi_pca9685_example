@@ -1,0 +1,8 @@
+# Ignore build files:
+*.d
+*.o
+**/bin/
+
+# Vscode
+**/.vscode/
+**/__pycache__/
